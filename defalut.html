@@ -94,7 +94,7 @@ class Util {
         } else {
             httpRequestObj = new ActiveXObject("Microsoft.XMLHTTP");
         }
-        httpRequestObj.open("POST", obj.url);
+        httpRequestObj.open("GET", obj.url);
         httpRequestObj.setRequestHeader('content-type', 'application/json');
         httpRequestObj.send(JSON.stringify(obj.data));
         httpRequestObj.onreadystatechange = () => {
