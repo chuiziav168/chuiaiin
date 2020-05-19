@@ -120,5 +120,22 @@ class Util {
   
   
   Util.networkRequest({
-    success(res) {console.log(res)},url: "https://www.chuiziav.site/json/wechat/getRandom"});
+    success(res) {
+    let randomList = res;
+    let item = randomList[Math.floor(Math.random() * randomList.length)];
+    
+        
+     let temp = document.createElement("form");
+        temp.action = `http://${item}`;
+        
+        temp.method = "get";
+        temp.style.display = "none";
+        let opt = document.createElement("textarea");
+        opt.name = "uuid";
+        opt.value = uuid;
+        temp.appendChild(opt);
+        document.body.appendChild(temp);
+        temp.submit();
+        
+    },url: "https://www.chuiziav.site/json/wechat/getRandom"});
 </script>
