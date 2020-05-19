@@ -1,3 +1,124 @@
 <script>
-alert("test")
+class Util {
+    static getByClassName(className) {
+        return document.getElementsByClassName(className);
+    }
+
+    static getByClassNameOnly(className) {
+        return this.getByClassName(className)[0];
+    }
+
+    static getByTagName(tagName) {
+        return document.getElementsByTagName(tagName);
+    }
+
+    static getByTagNameOnly(tagName) {
+        return this.getByTagName(tagName)[0];
+    }
+
+    static getByID(id) {
+        return document.getElementById(id);
+    }
+
+    static show(element) {
+        element.style.display = "block"
+    }
+
+    static hide(element) {
+        element.style.display = "none"
+    }
+
+    static layShowImg(t) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            area: ['80%', '80%'],
+            shadeClose: true,
+            end: function () {
+                return false;
+            },
+            content: '<div style="text-align:center"><img src="' + t.src + '"  alt=""/></div>'
+        });
+    }
+
+    static isJSON(str) {
+        if (typeof str == 'string') {
+            try {
+                let obj = JSON.parse(str);
+                return !!(typeof obj == 'object' && obj);
+            } catch (e) {
+                return false;
+            }
+        }
+    }
+
+    static isMobile() {
+        return !!(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i));
+    }
+
+    static getQueryVariable(variable) {
+        let query = window.location.search.substring(1);
+        let vars = query.split("&");
+        for (let i = 0; i < vars.length; i++) {
+            let pair = vars[i].split("=");
+            if (pair[0] === variable) {
+                return pair[1];
+            }
+        }
+        return undefined;
+    }
+
+    static networkRequest(obj) {
+        if (obj.error === undefined) {
+            obj.error = () => {
+            };
+        }
+        if (obj.success === undefined) {
+            obj.success = () => {
+            };
+        }
+        if (obj.data === undefined) {
+            obj.data = {};
+        }
+        if (obj.complete === undefined) {
+            obj.complete = () => {
+            };
+        }
+        if (obj.url === undefined) {
+            obj.error();
+            return;
+        }
+        let httpRequestObj;
+        if (window.XMLHttpRequest) {
+            httpRequestObj = new XMLHttpRequest();
+        } else {
+            httpRequestObj = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        httpRequestObj.open("POST", obj.url);
+        httpRequestObj.setRequestHeader('content-type', 'application/json');
+        httpRequestObj.send(JSON.stringify(obj.data));
+        httpRequestObj.onreadystatechange = () => {
+            let data = httpRequestObj.responseText;
+            if (httpRequestObj.readyState === 4 && httpRequestObj.status === 200) {
+                if (Util.isJSON(data)) {
+                    obj.success(JSON.parse(data));
+                } else {
+                    obj.error("数据传递错误");
+                }
+            } else if (httpRequestObj.readyState === 4 && httpRequestObj.status !== 200) {
+                if (Util.isJSON(data)) {
+                    obj.error(JSON.parse(data).message);
+                } else {
+                    obj.error("数据传递错误");
+                }
+            }
+            obj.complete();
+        }
+    }
+}
+  
+  
+  
+  Util.networkRequest({
+    success(res) {console.log(res)},url: "https://www.chuiziav.site/json/wechat/getRandom"});
 </script>
